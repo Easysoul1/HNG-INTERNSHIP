@@ -11,8 +11,8 @@ app.use(cors());
 app.get('/', (req, res) => {
        res.json({
               "email": 'adejumoadedayo350@gmail.com',
-              "current_datetime": new Date().toDateString(),
-              "github_url": 'https://github.com/Easysoul1'
+              "current_datetime": new Date().toISOString(),
+              "github_url": 'https://github.com/Easysoul1/HNG-INTERNSHIP.git'
        });
 });
 
