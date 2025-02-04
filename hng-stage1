@@ -4,6 +4,7 @@ const axios = require("axios");
 
 const app = express();
 app.use(cors());
+app.use(express.json()); // Middleware to handle JSON requests
 
 // Function to check if a number is prime
 function isPrime(num) {
@@ -42,19 +43,25 @@ async function getFunFact(num) {
         const response = await axios.get(`http://numbersapi.com/${num}/math?json`);
         return response.data.text;
     } catch (error) {
+        console.error("Error fetching fun fact:", error.message);
         return "No fun fact available for this number.";
     }
 }
+
+// Default Root Route to avoid "Cannot GET /" error
+app.get("/", (req, res) => {
+    res.send("Welcome to the Number Classification API! Use /api/classify-number?number=your_number to classify a number.");
+});
 
 // API Endpoint
 app.get("/api/classify-number", async (req, res) => {
     const { number } = req.query;
 
     // Validate input
-    if (!number || isNaN(number) || !Number.isInteger(Number(number))) {
+    if (!number || isNaN(number) || !Number.isInteger(parseFloat(number))) {
         return res.status(400).json({
-            number: number,
-            error: true
+            error: true,
+            message: "Invalid number provided. Please enter an integer."
         });
     }
 
@@ -69,6 +76,8 @@ app.get("/api/classify-number", async (req, res) => {
 
     // Classify properties
     let properties = [];
+    if (prime) properties.push("prime");
+    if (perfect) properties.push("perfect");
     if (armstrong) properties.push("armstrong");
     properties.push(parity);
 
@@ -80,8 +89,9 @@ app.get("/api/classify-number", async (req, res) => {
         number: num,
         is_prime: prime,
         is_perfect: perfect,
-        properties: properties,
+        is_armstrong: armstrong,
         digit_sum: digitSum,
+        properties: properties,
         fun_fact: funFact
     });
 });
@@ -89,6 +99,5 @@ app.get("/api/classify-number", async (req, res) => {
 // Define Port
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
 });
-
