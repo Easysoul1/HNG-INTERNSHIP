@@ -52,6 +52,7 @@ This API is deployed on a public hosting service, making it accessible worldwide
 
 ---
 
+# Stage 1 Readme file
 ## Setup Instructions
 To run the project locally, follow these steps:
 
